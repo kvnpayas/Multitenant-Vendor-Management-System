@@ -54,4 +54,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Organization::class);
     }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
 }
