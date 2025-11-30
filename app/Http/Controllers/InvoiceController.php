@@ -87,6 +87,6 @@ class InvoiceController extends Controller
 
         $this->invoiceRepo->deleteForTenant($tenantId, $id);
 
-        return response()->noContent();
+        return response()->json(['message' => 'Invoice deleted']);
     }
 }

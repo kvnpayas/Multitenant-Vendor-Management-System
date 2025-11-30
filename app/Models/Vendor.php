@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Invoice;
 use App\Models\Organization;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Vendor extends Model
 {
@@ -22,6 +23,11 @@ class Vendor extends Model
     public function invoices()
     {
         return $this->hasMany(Invoice::class);
+    }
+
+    public function scopeForTenant(Builder $query, $tenantId)
+    {
+        return $query->where('organization_id', $tenantId);
     }
 
 }
