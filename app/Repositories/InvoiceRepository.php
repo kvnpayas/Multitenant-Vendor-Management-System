@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Vendor;
 use App\Models\Invoice;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Repositories\Interfaces\InvoiceRepositoryInterface;
@@ -25,6 +26,10 @@ class InvoiceRepository implements InvoiceRepositoryInterface
 
     public function createForTenant(int $tenantId, array $data): Invoice
     {
+        $vendor = Vendor::find($data['vendor_id']);
+        if (!$vendor || $vendor->organization_id !== $tenantId) {
+            throw new \Exception('Vendor does not belong to tenant.');
+        }
         $data['organization_id'] = $tenantId;
         return Invoice::create($data);
     }
