@@ -23,7 +23,7 @@ class UpdateVendorRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|string|max:255',
-            'contact' => 'sometimes|string|max:255',
+            'contact' => 'sometimes|nullable|string|max:255',
         ];
     }
 }

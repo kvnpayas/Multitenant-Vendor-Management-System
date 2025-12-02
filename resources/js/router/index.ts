@@ -4,8 +4,8 @@ import { useAuthStore } from '@/stores/auth'
 import Login from '@/pages/Login.vue'
 import Dashboard from '@/pages/Dashboard.vue'
 import User from '@/pages/User.vue'
-// import Vendors from '@/views/vendors/VendorList.vue'
-// import Invoices from '@/views/invoices/InvoiceList.vue'
+import Vendors from '@/pages/Vendor.vue'
+import Invoices from '@/pages/Invoice.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -21,20 +21,20 @@ const router = createRouter({
     {
       path: '/users',
       component: User,
+      meta: { requiresAuth: true, requiresRole: 'admin' }
+    },
+
+    {
+      path: '/vendors',
+      component: Vendors,
       meta: { requiresAuth: true }
     },
 
-    // {
-    //   path: '/vendors',
-    //   component: Vendors,
-    //   meta: { requiresAuth: true }
-    // },
-
-    // {
-    //   path: '/invoices',
-    //   component: Invoices,
-    //   meta: { requiresAuth: true }
-    // },
+    {
+      path: '/invoices',
+      component: Invoices,
+      meta: { requiresAuth: true }
+    },
   ]
 })
 
@@ -46,6 +46,10 @@ router.beforeEach(async (to, _, next) => {
 
     if (!auth.user) {
       await auth.fetchUser().catch(() => next('/login'))
+    }
+
+    if (to.meta.requiresRole && auth.user?.role !== to.meta.requiresRole) {
+      return next('/dashboard') 
     }
   }
 

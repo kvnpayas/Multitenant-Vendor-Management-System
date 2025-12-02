@@ -125,7 +125,7 @@ async function createForm(): Promise<void> {
               <th class="p-2 border">Name</th>
               <th class="p-2 border">Email</th>
               <th class="p-2 border">Role</th>
-              <th class="p-2 border">Action</th>
+              <!-- <th class="p-2 border">Action</th> -->
             </tr>
           </thead>
           <tbody>
@@ -134,7 +134,7 @@ async function createForm(): Promise<void> {
               <td class="p-2 border">{{ user.name }}</td>
               <td class="p-2 border">{{ user.email }}</td>
               <td class="p-2 border">{{ user.role }}</td>
-              <td class="p-2 border"><Button @click="isDialogEditOpen(user.id)">Edit</Button></td>
+              <!-- <td class="p-2 border"><Button @click="isDialogEditOpen(user.id)">Edit</Button></td> -->
             </tr>
           </tbody>
         </table>

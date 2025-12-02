@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Vendor;
 use Illuminate\Http\Request;
 use App\Http\Resources\InvoiceResource;
 use App\Http\Requests\StoreInvoiceRequest;
@@ -36,6 +37,11 @@ class InvoiceController extends Controller
 
         $tenantId = $request->attributes->get('tenant_id');
 
+        $vendor = Vendor::find($request->vendor_id);
+        if (!$vendor || $vendor->organization_id !== $tenantId) {
+            return response()->json(['message' => 'Unprocessable Content'], 422);
+        }
+
         $invoice = $this->invoiceRepo->createForTenant($tenantId, $request->validated());
 
         return new InvoiceResource($invoice->load('vendor'));
@@ -56,10 +62,6 @@ class InvoiceController extends Controller
     public function update(UpdateInvoiceRequest $request, $id)
     {
 
-        if (!$request->user()->isAdmin()) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
-
         $tenantId = $request->attributes->get('tenant_id');
 
         $invoice = $this->invoiceRepo->findForTenant($tenantId, $id);
@@ -67,7 +69,7 @@ class InvoiceController extends Controller
             return response()->json(['message' => 'Not Found'], 404);
         }
 
-        $updated = $this->invoiceRepo->updateForTenant($tenantId, $id, $request->validated());
+        $updated = $this->invoiceRepo->updateForTenant($tenantId, (int) $id, $request->validated());
 
         return new InvoiceResource($updated->load('vendor'));
     }

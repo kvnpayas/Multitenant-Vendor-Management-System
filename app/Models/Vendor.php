@@ -4,11 +4,13 @@ namespace App\Models;
 
 use App\Models\Invoice;
 use App\Models\Organization;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
 class Vendor extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'organization_id',
         'name',

@@ -16,6 +16,7 @@ class InvoiceResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'vendor_id' => $this->vendor_id,
             'vendor' => $this->whenLoaded('vendor', function () {
                 return [
                     'id' => $this->vendor->id,

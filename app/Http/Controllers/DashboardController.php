@@ -36,7 +36,7 @@ class DashboardController extends Controller
 
     $invoices = $this->invoiceRepo->getAll($tenantId);
     $totalInvoices = $invoices->count();
-    $totalInvoicesDraft = $invoices->where('status', 'draft')->count();
+    $totalInvoicesPending = $invoices->where('status', 'pending')->count();
     $totalInvoicesSent = $invoices->where('status', 'sent')->count();
     $totalInvoicesPaid = $invoices->where('status', 'paid')->count();
     $totalInvoicesOverdue = $invoices->where('status', 'overdue')->count();
@@ -47,7 +47,7 @@ class DashboardController extends Controller
       'accountant_users' => $accountantCount,
       'total_vendors' => $totalVendors,
       'total_invoices' => $totalInvoices,
-      'invoices_draft' => $totalInvoicesDraft,
+      'invoices_pending' => $totalInvoicesPending,
       'invoices_sent' => $totalInvoicesSent,
       'invoices_paid' => $totalInvoicesPaid,
       'invoices_overdue' => $totalInvoicesOverdue,

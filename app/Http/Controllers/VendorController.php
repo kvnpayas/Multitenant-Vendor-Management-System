@@ -25,6 +25,10 @@ class VendorController extends Controller
 
     public function store(StoreVendorRequest $request)
     {
+        if (!$request->user()->isAdmin()) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
         $tenantId = $request->attributes->get('tenant_id');
         $vendor = $this->vendors->create($tenantId, $request->validated());
         return new VendorResource($vendor);
@@ -44,14 +48,22 @@ class VendorController extends Controller
 
     public function update(UpdateVendorRequest $request, $id)
     {
+        if (!$request->user()->isAdmin()) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
         $tenantId = $request->attributes->get('tenant_id');
-        $vendor = $this->vendors->update($tenantId, $id, $request->validated());
+        $vendor = $this->vendors->update($tenantId, (int) $id, $request->validated());
 
         return new VendorResource($vendor);
     }
 
     public function destroy(Request $request, $id)
     {
+        if (!$request->user()->isAdmin()) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
         $tenantId = $request->attributes->get('tenant_id');
         $this->vendors->delete($tenantId, $id);
 

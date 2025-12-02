@@ -11,7 +11,7 @@ class VendorRepository implements VendorRepositoryInterface
 {
   public function all(int $tenantId): LengthAwarePaginator
   {
-    return Vendor::forTenant($tenantId)->paginate(10);
+    return Vendor::forTenant($tenantId)->orderBy('id', 'asc')->paginate(10);
   }
   public function getAll(int $tenantId): Collection
   {

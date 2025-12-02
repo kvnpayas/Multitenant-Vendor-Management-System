@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->foreignId('organization_id')->constrained()->onDelete('cascade');
             $table->foreignId('vendor_id')->constrained()->onDelete('no action');
             $table->decimal('amount', 15, 2);
-            $table->enum('status', ['draft', 'sent', 'paid', 'overdue'])->default('draft');
+            $table->enum('status', ['pending', 'sent', 'paid', 'overdue'])->default('pending');
             $table->index(['organization_id', 'vendor_id']);
             $table->timestamps();
         });

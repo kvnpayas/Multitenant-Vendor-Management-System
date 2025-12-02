@@ -16,7 +16,7 @@ class UpdateInvoiceRequest extends FormRequest
         return [
             'vendor_id' => ['sometimes', 'integer', 'exists:vendors,id'],
             'amount' => ['sometimes', 'numeric', 'min:0'],
-            'status' => ['sometimes', 'in:draft,sent,paid,overdue'],
+            'status' => ['sometimes', 'in:pending,sent,paid,overdue'],
         ];
     }
 }

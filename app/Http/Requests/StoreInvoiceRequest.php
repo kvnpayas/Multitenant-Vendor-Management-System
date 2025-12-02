@@ -24,7 +24,7 @@ class StoreInvoiceRequest extends FormRequest
         return [
             'vendor_id' => ['required', 'integer', 'exists:vendors,id'],
             'amount' => ['required', 'numeric', 'min:0'],
-            'status' => ['nullable', 'in:draft,sent,paid,overdue'],
+            'status' => ['nullable', 'in:pending,sent,paid,overdue'],
         ];
     }
 }

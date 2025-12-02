@@ -17,7 +17,9 @@ function logout() {
       <h1 class="font-bold">Vendor Management System</h1>
       <nav class="space-x-4">
         <RouterLink to="/dashboard">Dashboard</RouterLink>
-        <RouterLink to="/users">Users</RouterLink>
+        <template v-if="auth.user && auth.user.role === 'admin'">
+          <RouterLink to="/users">Users</RouterLink>
+        </template>
         <RouterLink to="/vendors">Vendor</RouterLink>
         <RouterLink to="/invoices">Invoices</RouterLink>
         <button @click="logout" class="ml-4 underline">Logout</button>
