@@ -3,11 +3,13 @@
 namespace App\Repositories\Interfaces;
 
 use App\Models\Vendor;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 interface VendorRepositoryInterface
 {
     public function all(int $tenantId): LengthAwarePaginator;
+    public function getAll(int $tenantId): Collection;
 
     public function find(int $tenantId, int $id): ?Vendor;
 

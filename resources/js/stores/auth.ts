@@ -1,55 +1,78 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
-import { router } from '@inertiajs/vue3'
+import axios, { AxiosError } from 'axios'
+import router from '@/router'
+
+interface Organization {
+  id: number
+  name: string
+}
 
 interface User {
-    id: number
-    email: string
-    role: string
-    organization_id: number
+  id: number
+  email: string
+  name: string
+  role: string
+  organization_id: number
+  organization: Organization
 }
 
 interface LoginForm {
-    email: string
-    password: string
+  email: string
+  password: string
+}
+
+interface ApiError {
+  message: string
 }
 
 export const useAuthStore = defineStore('auth', {
-    state: () => ({
-        token: localStorage.getItem('token') || null,
-        user: null as User | null,
-    }),
-    actions: {
-        checkAuth() {
-            if (!this.token) {
-                router.visit('/login')
-            }
-        },
-        async login(form: LoginForm) {
-            const res = await axios.post('/api/login', form)
-            this.token = res.data.token
-            if (this.token) {
-                localStorage.setItem('token', this.token)
-            }
-            await this.fetchUser()
-        },
-        async fetchUser() {
-            if (!this.token) return
-            try {
-                const res = await axios.get('/api/me')
-                this.user = res.data
-            } catch (err: any) {
-                // If backend says Unauthorized, clear token and redirect
-                if (err.response?.status === 401) {
-                    this.logout()
-                    router.visit('/login')
-                }
-            }
-        },
-        logout() {
-            this.token = null
-            this.user = null
-            localStorage.removeItem('token')
-        }
+ state: () => ({
+    token: localStorage.getItem('token') || '',
+    user: null as User | null,
+  }),
+
+  actions: {
+    async login(form: LoginForm) {
+      try {
+        // NO NEED FOR "/api/login" BECAUSE axios.baseUrl = "/api"
+        const res = await axios.post('/login', form)
+
+        this.token = res.data.token
+        localStorage.setItem('token', this.token)
+
+        await this.fetchUser()
+
+        // Redirect after successful login
+        router.push('/dashboard')
+
+      } catch (error) {
+        const err = error as AxiosError<ApiError>
+        throw err
+      }
+    },
+
+    async fetchUser() {
+      if (!this.token) return
+
+      try {
+        const res = await axios.get('/me')
+        this.user = res.data
+      } catch (error) {
+        // If token is invalid → logout automatically
+        this.logout()
+      }
+    },
+
+    logout() {
+      this.token = ''
+      this.user = null
+      localStorage.removeItem('token')
+
+      router.push('/login')
+    },
+
+    isLoggedIn(): boolean {
+      return !!this.token
     }
+  }
 })

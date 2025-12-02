@@ -9,19 +9,28 @@ use App\Repositories\Interfaces\UserRepositoryInterface;
 
 class UserController extends Controller
 {
-    private UserRepositoryInterface $repo;
+  private UserRepositoryInterface $repo;
 
-    public function __construct(UserRepositoryInterface $repo)
-    {
-        $this->repo = $repo;
-    }
+  public function __construct(UserRepositoryInterface $repo)
+  {
+    $this->repo = $repo;
+  }
 
-    public function store(StoreUserRequest $request)
-    {
-        $tenantId = $request->attributes->get('tenant_id');
+  public function store(StoreUserRequest $request)
+  {
+    $tenantId = $request->attributes->get('tenant_id');
 
-        $user = $this->repo->createForTenant($tenantId, $request->validated());
+    $user = $this->repo->createForTenant($tenantId, $request->validated());
 
-        return new UserResource($user);
-    }
+    return new UserResource($user);
+  }
+
+  public function index(Request $request)
+  {
+    $tenantId = $request->attributes->get('tenant_id');
+
+    $user = $this->repo->getTenantUser($tenantId);
+
+    return  UserResource::collection($user);
+  }
 }

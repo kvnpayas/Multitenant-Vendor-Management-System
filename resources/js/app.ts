@@ -1,40 +1,26 @@
 import '../css/app.css';
-
-import { createInertiaApp } from '@inertiajs/vue3';
-import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import type { DefineComponent } from 'vue';
 import { createApp, h } from 'vue';
 import { createPinia } from 'pinia'
 import axios from 'axios';
-import { router } from '@inertiajs/vue3'
+import router from "./router";
+import App from './App.vue'
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
+// Axios defaults
+axios.defaults.baseURL = '/api'
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
 
-createInertiaApp({
-    title: (title) => (title ? `${title} - ${appName}` : appName),
-    resolve: (name) => resolvePageComponent(`./pages/${name}.vue`, import.meta.glob<DefineComponent>('./pages/**/*.vue')),
-    setup({ el, App, props, plugin }) {
+const app = createApp(App)
+const pinia = createPinia()
 
-        const pinia = createPinia()
-
-        axios.interceptors.response.use(
-            (res) => res,
-            (err) => {
-                if (err.response?.status === 401) {
-                    localStorage.removeItem("token")
-                    router.visit("/login")
-                }
-                return Promise.reject(err)
-            }
-        )
-
-        createApp({ render: () => h(App, props) })
-            .use(plugin)
-            .use(pinia)
-            .mount(el);
-    },
-    progress: {
-        color: '#4B5563',
-    },
-});
+app.use(pinia)
+app.use(router)
+app.mount('#app')
